@@ -1,0 +1,73 @@
+{
+  "time": 1775805182949,
+  "blocks": [
+    {
+      "id": "3OilOXWGd8",
+      "type": "header",
+      "data": {
+        "text": "Features to Add in Upwalls App",
+        "level": 2
+      }
+    },
+    {
+      "id": "0ehPouiNDs",
+      "type": "list",
+      "data": {
+        "style": "checklist",
+        "meta": {},
+        "items": [
+          {
+            "content": "Weather features - Wittr api to fetch data",
+            "meta": {
+              "checked": true
+            },
+            "items": []
+          },
+          {
+            "content": "Unsplash api to add background image",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Store userlinks and city in local storage ",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Fetch icon image while instering icon",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Add Settings page to manage icons and other things ",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Unsplash image change settings after how much time",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Save settings in local storage",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          }
+        ]
+      }
+    }
+  ],
+  "version": "2.31.5"
+}

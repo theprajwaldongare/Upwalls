@@ -1,15 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useContext } from 'react'
 import { MdSearch } from "react-icons/md";
 import { Link } from 'react-router-dom'
+import { SettingsContext } from './SettingsContext'
 import googleLogo from './assets/googleLogo.png'
 import background from './assets/background.jpg'
 import './App.css'
 
 function Home() {
 
+  const {isSearchEnabled,setIsSearchEnabled} = useContext(SettingsContext)
+
   const [now, setNow] = useState(new Date())
-  const [searchShow, setSearchShow] = useState(true)
+  // const [searchShow, setSearchShow] = useState(true)
   const [searchData, setsearchData] = useState("")
+  const [temp, setTemp] = useState("")
+
+  // useEffect(() => {
+  //   setSearchShow(isSearchEnabled)
+    
+  // }, [])
+  
+
+
   useEffect(() => {
     const updatetime = setInterval(() => {
       setNow(new Date())
@@ -17,6 +29,21 @@ function Home() {
 
     return () => clearInterval(updatetime)
   }, [])
+
+  useEffect(() => {
+    const wttrdata = async ()=>{
+      try {
+        const response = await fetch('https://wttr.in/Pune?format=j1')
+        const data = await response.json()
+        setTemp(`${data.current_condition[0].temp_C},${data.current_condition[0].weatherDesc[0].value}`)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    wttrdata()
+  }, [])
+  
+
 
   const timeval = now.toLocaleTimeString('en-US')
   const [timeOnly, amPm] = timeval.split(' ')
@@ -63,10 +90,10 @@ function Home() {
         </div>
       </div>
 
-      {searchShow &&
+      {isSearchEnabled &&
         <div className="search flex w-full justify-center mt-6">
           <div className="srch bg-violet-400 flex p-4 rounded-3xl">
-            <input type="text" placeholder='Search... ' className=' outline-none ml-2 w-100' value={searchData} onChange={(e) => { setsearchData(e.target.value) }} onKeyDown={handleKeyEnter} />
+            <input type="text" placeholder='Search... ' className=' outline-none ml-2 w-100' value={searchData || ""} onChange={(e) => { setsearchData(e.target.value) }} onKeyDown={handleKeyEnter} />
             <MdSearch className="text-2xl text-black" onClick={GoSearch} />
           </div>
         </div>
@@ -83,6 +110,15 @@ function Home() {
         <div className="google flex flex-col content-center">
           <div className="applogo h-14 w-14 bg-cyan-950  rounded-lg"><img src={googleLogo} alt="" /></div>
           <div className="appname mt-2">Google</div>
+        </div>
+      </div>
+
+      <div className="weather flex flex-col items-center justify-center">
+        <div className="tempc mt-6 text-2xl">
+          {temp.split(",")[0]} ℃
+        </div>
+        <div className="tempCondition mt-2 text-2xl">
+          {temp.split(",")[1]}
         </div>
       </div>
       {/* </div> */}
