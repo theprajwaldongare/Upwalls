@@ -41,30 +41,58 @@ export const SettingsProvider = ({ children }) => {
         return []
     })
 
+    const [imageLoc, setImageLoc] = useState(()=>{
+        const savedData = localStorage.getItem("upwallSettings")
+        if(savedData){
+            const parsedData = JSON.parse(savedData)
+            if(parsedData.imageLoc !== undefined){
+                return parsedData.imageLoc
+            }
+        }
+    })
+    const [imgHourCnt, setImgHourCnt] = useState(0)
     const [bgImage, setBgImage] = useState(()=>{
         const savedBg = localStorage.getItem("upwallBackground")
+        // if (savedBg[0]) {
+        //     return savedBg[imageLoc]
+        // }
         if (savedBg) {
-            return savedBg
+            return JSON.parse(savedBg)
         }
-        return null
+        return []
     })
+
+
+    // const [bgImage, setBgImage] = useState(()=>{
+    //     const savedBg = localStorage.getItem("upwallBackground")
+    //     if (savedBg) {
+    //         return savedBg
+    //     }
+    //     return null
+    // })
 
 
     useEffect(() => {
         console.log("The val of searchED", isSearchEnabled,isWeatherEnabled,cityInp)
+        if(imageLoc==20){
+            setImageLoc(0)
+        }
+
         const dataToLocal = {
             "search": isSearchEnabled,
             "weather":isWeatherEnabled,
             "city":cityInp,
-            "links":links
+            "links":links,
+            "imageLoc":imageLoc,
+            "imgHourCnt":imgHourCnt
         }
         localStorage.setItem("upwallSettings", JSON.stringify(dataToLocal))
         console.log(links)
-    }, [isSearchEnabled,isWeatherEnabled,cityInp,links])
+    }, [isSearchEnabled,isWeatherEnabled,cityInp,links,imageLoc])
 
     return (
 
-        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks,bgImage,setBgImage }}>
+        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks,bgImage,setBgImage,imageLoc, setImageLoc,imgHourCnt, setImgHourCnt }}>
             {children}
         </SettingsContext.Provider>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { MdSearch, MdChangeCircle} from "react-icons/md";
+import { MdSearch, MdChangeCircle } from "react-icons/md";
 import { HiCog } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
@@ -9,12 +9,11 @@ import './App.css'
 
 function Home() {
 
-  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage } = useContext(SettingsContext)
+  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt } = useContext(SettingsContext)
 
   const [now, setNow] = useState(new Date())
   const [searchData, setsearchData] = useState("")
   const [temp, setTemp] = useState("")
-  // const [unsplashImage, setUnsplashImage] = useState(false)
 
 
 
@@ -81,26 +80,85 @@ function Home() {
   }
 
   const fetchImage = async () => {
-    try {
-      const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=wallpapers&client_id=${import.meta.env.VITE_UNSPLASH_KEY}`
-      const response = await fetch(url)
-      const dataImg = await response.json()
-      const newImageUrl = dataImg.urls.regular
-      setBgImage(newImageUrl)
+    const currentTime = Date.now();
+    const oneHour = 60 * 60 * 1000;
+    let currentImages = [...bgImage];
 
+    // if (now.getHours()-imgHourCnt>=1) {
+    //   setBgImage([]) // to add new 20 images when user click next image button
 
-      // const currSet = JSON.parse(localStorage.getItem("upwallSettings")) || {}
-      // currSet.bgImage = newImageUrl
-      localStorage.setItem("upwallBackground", newImageUrl)
-    } catch (error) {
-      console.log(error)
+    // }
+    if (imgHourCnt > 0 && (currentTime - imgHourCnt >= oneHour)) {
+      currentImages = []
+      setImgHourCnt(currentTime)
+
     }
+
+    if (currentImages.length < 20) {
+      if (currentImages.length == 0) {
+        setImgHourCnt(currentTime)
+      }
+      try {
+        const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=wallpapers&client_id=${import.meta.env.VITE_UNSPLASH_KEY}`
+        const response = await fetch(url)
+        const dataImg = await response.json()
+        const newImageUrl = dataImg.urls.regular
+
+        currentImages.push(newImageUrl)
+        setBgImage(currentImages)
+
+
+
+
+        localStorage.setItem("upwallBackground", JSON.stringify(currentImages))
+        setImageLoc(currentImages.length - 1)
+      } catch (error) {
+        console.log(error)
+        if (currentImages.length > 0) {
+          setImageLoc((prev) => (prev + 1) % currentImages.length);
+        }
+      }
+    }
+    else {
+      if (imageLoc >= 19) {
+        setImageLoc(0)
+      }
+      else {
+        setImageLoc(imageLoc + 1)
+      }
+    }
+    // if (bgImage.length < 20) {
+    //   if (bgImage.length==0) {
+    //     setImgHourCnt(now.getHours())
+    //   }
+    //   try {
+    //     const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=wallpapers&client_id=${import.meta.env.VITE_UNSPLASH_KEY}`
+    //     const response = await fetch(url)
+    //     const dataImg = await response.json()
+    //     const newImageUrl = dataImg.urls.regular
+    //     setBgImage([...(bgImage || []),newImageUrl])
+
+
+
+    //     // localStorage.setItem("upwallBackground", newImageUrl)
+    //     localStorage.setItem("upwallBackground", bgImage)
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+    // else{
+    //   if (imageLoc>=20) {
+    //     setImageLoc(0)
+    //   }
+    //   setImageLoc(imageLoc+1)
+    // }
+
   }
 
 
   return (
     <>
-      <div className="main w-full h-screen bg-cover overflow-hidden select-none" style={{ backgroundImage: `url(${bgImage || background})` }}>
+      <div className="main w-full h-screen bg-cover overflow-hidden select-none" style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
         <div className="timeAndDate flex justify-center mt-4">
           <div className="greet">
             {getGreeting()}
@@ -118,8 +176,8 @@ function Home() {
 
         {isSearchEnabled &&
           <div className="search flex w-full justify-center mt-6">
-            <div className="srch bg-violet-400 flex p-4 rounded-3xl">
-              <input type="text" placeholder='Search... ' className=' outline-none ml-2 w-100 text-black selection:bg-violet-300' value={searchData || ""} onChange={(e) => { setsearchData(e.target.value) }} onKeyDown={handleKeyEnter} />
+            <div className="srch flex items-center rounded-3xl bg-black/20  p-4 backdrop-blur-md border-white/20 shadow-xl transition-all hover:bg-black/30 group">
+              <input type="text" placeholder='Search... ' className='bg-transparent outline-none px-2 w-96 ml-2  text-white selection:bg-violet-500' value={searchData || ""} onChange={(e) => { setsearchData(e.target.value) }} onKeyDown={handleKeyEnter} />
               <MdSearch className="text-2xl text-black" onClick={GoSearch} />
             </div>
           </div>

@@ -1,5 +1,5 @@
 {
-  "time": 1775924953399,
+  "time": 1775934001916,
   "blocks": [
     {
       "id": "3OilOXWGd8",
@@ -75,28 +75,28 @@
           {
             "content": "Add back button in settings ",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
           {
             "content": "Make search transparent",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
           {
             "content": "Add per hr per user limit of 20 req on API if exceed then use the saved 20 images again",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
           {
             "content": "Save 20 images in local storage",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },

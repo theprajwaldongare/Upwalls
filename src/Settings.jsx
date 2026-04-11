@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from 'react'
 import Checkbox from './components/Checkbox'
+import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
-import { MdCheck } from 'react-icons/md'
+import { IoCaretBackCircle} from 'react-icons/io5'
 import { HiOutlineTrash, HiCheckCircle } from 'react-icons/hi'
+import { Links } from 'react-router-dom'
 const Settings = () => {
   const { isSearchEnabled, setIsSearchEnabled, isWeatherEnabled, setIsWeatherEnabled, cityInp, setCityInp, links, setLinks } = useContext(SettingsContext)
 
@@ -58,8 +60,15 @@ const Settings = () => {
   return (
     <>
       <div className="header flex justify-between m-3">
-        <div className="settingsname text-2xl">Settings</div>
+        <div className="settingsname text-2xl flex justify-center">
+          <Link to="/">
+        <IoCaretBackCircle className='text-4xl mr-2'></IoCaretBackCircle>
+        </Link>
+          <div>Settings</div>
+        </div>
         <div className="appname text-4xl font-mono">Upwalls</div>
+      </div>
+      <div className="back">
       </div>
 
       <div className="main flex justify-center items-center flex-col mt-12 ml-40 mr-40 ">
