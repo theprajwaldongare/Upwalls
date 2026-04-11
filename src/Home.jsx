@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { MdSearch } from "react-icons/md";
+import { HiCog} from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
 import googleLogo from './assets/googleLogo.png'
@@ -95,8 +96,9 @@ function Home() {
 
       <div className="setting flex justify-center mt-6">
         <Link to="/settings">
-          <div className="set bg-pink-900 h-6 w-6 rounded-full cursor-pointer">
-          </div>
+          {/* <div className="set bg-pink-900 h-6 w-6 rounded-full cursor-pointer">
+          </div> */}
+          <HiCog className="set  h-10 w-10 rounded-full cursor-pointer"></HiCog>
         </Link>
       </div>
 
@@ -119,15 +121,17 @@ function Home() {
         </div>
       </div>}
 
-        <div className="linkRender flex gap-4 mt-8 justify-center">
+        <div className="linkRender flex gap-4 mt-8 justify-center flex-wrap max-w-4xl mx-auto">
+        {/* <div className="linkRender grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 mt-8 justify-items-center"> */}
           {links?.map((valOfLink)=>(
-            <div key={valOfLink.name}>
-              <div className="logo"><img src={valOfLink.imageText} alt="" /></div>
-              <div className="lname">{valOfLink.name}</div>
-              <div className="lurl">{valOfLink.url}</div>
+            <div key={valOfLink.name} className='cursor-pointer flex flex-col justify-center items-center ' onClick={()=>{window.location.href=valOfLink.url}} >
+              <div className="logo" ><img src={valOfLink.imageText} alt="" className='w-10 h-10 rounded-lg '  /></div>
+              <div className="lname text-sm mt-1 capitalize">{valOfLink.name}</div>
             </div>
           ))}
         </div>
+
+        
 
       {/* </div> */}
     </>

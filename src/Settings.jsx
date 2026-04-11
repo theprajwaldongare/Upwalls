@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import Checkbox from './components/Checkbox'
 import { SettingsContext } from './SettingsContext'
 import { MdCheck } from 'react-icons/md'
+import { HiOutlineTrash, HiCheckCircle } from 'react-icons/hi'
 const Settings = () => {
   const { isSearchEnabled, setIsSearchEnabled, isWeatherEnabled, setIsWeatherEnabled, cityInp, setCityInp, links, setLinks } = useContext(SettingsContext)
 
@@ -28,18 +29,19 @@ const Settings = () => {
 
     let safeUrl = typedLink;
     if (!safeUrl.startsWith('http://') && !safeUrl.startsWith('https://')) {
-      safeUrl = 'https://' + safeUrl;
+      safeUrl = 'https://' + safeUrl
     }
 
-    const urlObj = new URL(safeUrl);
-    const domain = urlObj.hostname;
+    const urlObj = new URL(safeUrl)
+    const domain = urlObj.hostname
 
-    const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    // const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+    const iconUrl = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
 
 
     const saveToArray = {
 
-      name: domain.replace('www.', '').split('.')[0], 
+      name: domain.replace('www.', '').split('.')[0],
       url: safeUrl,
       imageText: iconUrl
     }
@@ -48,47 +50,10 @@ const Settings = () => {
     setTypedLink("")
   }
 
-  // const addLinkhere = async ()=>{
-  //   setShowLinkAdd(false)
-  //   const logoString = await getBase64Logo(typedLink)
-  //   console.log(logoString)
-
-  //   const saveToArray = {
-  //     name:typedLink.includes("https") ? typedLink.split("/").slice(2)[0].split(".")[0] :  typedLink.split(".")[0],
-  //     url:typedLink,
-  //     imageText: logoString
-  //   }
-  //   setLinks([...links || [], saveToArray])
-  //   setTypedLink("")
-
-  // }
-  // const getBase64Logo = async (websiteUrl) => {
-  //   try {
-  //     let safeUrl = websiteUrl;
-  //     if (!safeUrl.startsWith('http://') && !safeUrl.startsWith('https://')) {
-  //       safeUrl = 'https://' + safeUrl;
-  //     }
-  //     const urlObj = new URL(safeUrl)
-  //     const domain = urlObj.hostname
-
-  //     const googleFaviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
-  //     const response = await fetch(googleFaviconUrl)
-  //     const blob = await response.blob()
-      
-  //     return new Promise((resolve, reject) => {
-  //       const reader = new FileReader()
-        
-  //       reader.onloadend = () => resolve(reader.result)
-  //       reader.onerror = reject
-
-  //       reader.readAsDataURL(blob) 
-  //     });
-
-  //   } catch (error) {
-  //     console.log(error)
-  //     return null
-  //   }
-  // };
+  const deleteLink = (nameOfLink)=>{
+    const remLinks = links.filter((item)=>item.name!=nameOfLink)
+    setLinks(remLinks)
+  }
 
   return (
     <>
@@ -97,7 +62,7 @@ const Settings = () => {
         <div className="appname text-4xl font-mono">Upwalls</div>
       </div>
 
-      <div className="main flex justify-center items-center flex-col mt-12 ml-40 mr-40 border border-green-800">
+      <div className="main flex justify-center items-center flex-col mt-12 ml-40 mr-40 ">
         <div className="item  p-4 flex justify-between w-full text-xl">
           <div className="iname">Search</div>
           <div className="itemstate">
@@ -111,11 +76,18 @@ const Settings = () => {
             <Checkbox checked={isWeatherEnabled} onChange={(e) => setIsWeatherEnabled(e.target.checked)} />
           </div>
         </div>
-        {isWeatherEnabled && <div className="weatherAddons flex mt-2 ml-8  w-full ">
+        {isWeatherEnabled && <div className="weatherAddons flex mt-2 ml-8  items-center  pl-4 border-l-2 border-gray-700 w-full mb-6">
           <div className="cityname">City</div>
-          <input type="text" className='ml-6 mb-3 border border-blue-500 outline-teal-400  w-60 h-6 rounded-2xl p-4' value={cityType} placeholder={cityInp} onChange={(e) => { setCityType(e.target.value) }} />
+          {/* <input type="text" className='ml-6 mb-3 border border-blue-500 outline-teal-400  w-60 h-6 rounded-2xl p-4 ' value={cityType} placeholder={cityInp} onChange={(e) => { setCityType(e.target.value) }} /> */}
+          <input type="text" className='ml-6    bg-gray-800 text-gray-200 px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-violet-500 transition-colors w-64' value={cityType} placeholder={cityInp} onChange={(e) => { setCityType(e.target.value) }} onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              addCity()
+            }
+          }} />
+
           <div className="tick  ">
-            <MdCheck className="text-2xl text-white bg-violet-800 rounded-full ml-2 mt-1  cursor-pointer" onClick={addCity} />
+            {/* <MdCheck className="text-2xl text-white bg-violet-800 rounded-full ml-2 mt-1  cursor-pointer" onClick={addCity} /> */}
+            <HiCheckCircle className="text-4xl ml-2 text-violet-500 hover:text-violet-400 cursor-pointer transition-colors" onClick={addCity}></HiCheckCircle>
           </div>
         </div>}
 
@@ -133,12 +105,31 @@ const Settings = () => {
               </button>
             </div>
           </div>
-          {showLinkAdd && <div className="linkadd flex mt-3">
-            <input type="text" placeholder='Add link' className='w-50 h-8 border border-y-emerald-500 outline-emerald-600 rounded-3xl p-2 text-sm' value={typedLink} onChange={(e)=>{setTypedLink(e.target.value)}} />
+          {showLinkAdd && <div className="linkadd flex mt-3 items-center  pl-4 border-l-2 border-gray-700 w-full mb-6">
+            <div className="addname text-base">Add link</div>
+            <input type="text" className='ml-4 bg-gray-800 text-gray-200 px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-violet-500 transition-colors w-64' value={typedLink} onChange={(e) => { setTypedLink(e.target.value) }} onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              addLinkhere()
+            }
+          }} />
             <div className="tick">
-            <MdCheck className="text-2xl text-white bg-violet-800 rounded-full ml-2 mt-1  cursor-pointer" onClick={addLinkhere} />
-          </div>
+              {/* <MdCheck className="text-2xl text-white bg-violet-800 rounded-full ml-2 mt-1  cursor-pointer" onClick={addLinkhere} /> */}
+              <HiCheckCircle className="text-4xl ml-2 text-violet-500 hover:text-violet-400 cursor-pointer transition-colors" onClick={addLinkhere}></HiCheckCircle>
+            </div>
           </div>}
+        </div>
+        <div className="quickshow  w-full">
+          {links?.map((valOfLink) => (
+            <div key={valOfLink.name} className='flex justify-between items-center w-full' >
+              <div className="content flex ml-4 items-center">
+                <div className="logo" ><img src={valOfLink.imageText} alt="" className='w-8 h-8 rounded-lg mt-2 mr-2' /></div>
+                <div className="lname text-sm mt-1 capitalize">{valOfLink.name}</div>
+              </div>
+              <div className="btns mr-4">
+                <HiOutlineTrash className="text-2xl cursor-pointer text-gray-400 hover:text-red-600 transition-colors" onClick={()=>{deleteLink(valOfLink.name)}} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>
