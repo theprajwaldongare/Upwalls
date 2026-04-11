@@ -1,4 +1,4 @@
-import { useState, useEffect,useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { MdSearch } from "react-icons/md";
 import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
@@ -8,18 +8,12 @@ import './App.css'
 
 function Home() {
 
-  const {isSearchEnabled,setIsSearchEnabled} = useContext(SettingsContext)
+  const { isSearchEnabled, isWeatherEnabled, cityInp, links } = useContext(SettingsContext)
 
   const [now, setNow] = useState(new Date())
-  // const [searchShow, setSearchShow] = useState(true)
   const [searchData, setsearchData] = useState("")
   const [temp, setTemp] = useState("")
 
-  // useEffect(() => {
-  //   setSearchShow(isSearchEnabled)
-    
-  // }, [])
-  
 
 
   useEffect(() => {
@@ -31,9 +25,9 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    const wttrdata = async ()=>{
+    const wttrdata = async () => {
       try {
-        const response = await fetch('https://wttr.in/Pune?format=j1')
+        const response = await fetch(`https://wttr.in/${cityInp}?format=j1`)
         const data = await response.json()
         setTemp(`${data.current_condition[0].temp_C},${data.current_condition[0].weatherDesc[0].value}`)
       } catch (error) {
@@ -42,7 +36,7 @@ function Home() {
     }
     wttrdata()
   }, [])
-  
+
 
 
   const timeval = now.toLocaleTimeString('en-US')
@@ -74,7 +68,7 @@ function Home() {
 
   return (
     <>
-    {/* <div className="main w-full h-screen bg-cover overflow-hidden" style={{backgroundImage:`url(${background})`}}> */}
+      {/* <div className="main w-full h-screen bg-cover overflow-hidden" style={{backgroundImage:`url(${background})`}}> */}
       <div className="timeAndDate flex justify-center mt-4">
         <div className="greet">
           {getGreeting()}
@@ -113,14 +107,28 @@ function Home() {
         </div>
       </div>
 
-      <div className="weather flex flex-col items-center justify-center">
+      {isWeatherEnabled && <div className="weather flex flex-col items-center justify-center">
         <div className="tempc mt-6 text-2xl">
           {temp.split(",")[0]} ℃
         </div>
         <div className="tempCondition mt-2 text-2xl">
           {temp.split(",")[1]}
         </div>
-      </div>
+        <div className="cityname mt-2 text-2xl">
+          {cityInp}
+        </div>
+      </div>}
+
+        <div className="linkRender flex gap-4 mt-8 justify-center">
+          {links?.map((valOfLink)=>(
+            <div key={valOfLink.name}>
+              <div className="logo"><img src={valOfLink.imageText} alt="" /></div>
+              <div className="lname">{valOfLink.name}</div>
+              <div className="lurl">{valOfLink.url}</div>
+            </div>
+          ))}
+        </div>
+
       {/* </div> */}
     </>
   )
