@@ -1,5 +1,5 @@
 {
-  "time": 1775887812682,
+  "time": 1775924953399,
   "blocks": [
     {
       "id": "3OilOXWGd8",
@@ -26,7 +26,7 @@
           {
             "content": "Unsplash api to add background image",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
@@ -60,6 +60,48 @@
           },
           {
             "content": "Save settings in local storage &amp; Extension storage ",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Make home page UI good ",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Add back button in settings ",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Make search transparent",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Add per hr per user limit of 20 req on API if exceed then use the saved 20 images again",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Save 20 images in local storage",
+            "meta": {
+              "checked": false
+            },
+            "items": []
+          },
+          {
+            "content": "Dont make darknote logo up only hide it when screen size collapse with the user notes",
             "meta": {
               "checked": false
             },

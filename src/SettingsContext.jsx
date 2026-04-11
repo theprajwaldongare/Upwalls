@@ -41,6 +41,14 @@ export const SettingsProvider = ({ children }) => {
         return []
     })
 
+    const [bgImage, setBgImage] = useState(()=>{
+        const savedBg = localStorage.getItem("upwallBackground")
+        if (savedBg) {
+            return savedBg
+        }
+        return null
+    })
+
 
     useEffect(() => {
         console.log("The val of searchED", isSearchEnabled,isWeatherEnabled,cityInp)
@@ -56,7 +64,7 @@ export const SettingsProvider = ({ children }) => {
 
     return (
 
-        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks }}>
+        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks,bgImage,setBgImage }}>
             {children}
         </SettingsContext.Provider>
     );
