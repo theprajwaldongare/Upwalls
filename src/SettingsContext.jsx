@@ -88,7 +88,7 @@ export const SettingsProvider = ({ children }) => {
         }
         localStorage.setItem("upwallSettings", JSON.stringify(dataToLocal))
         console.log(links)
-    }, [isSearchEnabled, isWeatherEnabled, cityInp, links, imageLoc])
+    }, [isSearchEnabled, isWeatherEnabled, cityInp, links, imageLoc,imgHourCnt])
 
     return (
 

@@ -104,7 +104,12 @@ function Home() {
         const dataImg = await response.json()
         const newImageUrl = dataImg.urls.regular
 
-        currentImages.push(newImageUrl)
+        const imageObj = {
+          url: newImageUrl,
+          photographer: dataImg.user.name,
+          profileLink: dataImg.user.links.html
+        }
+        currentImages.push(imageObj)
         setBgImage(currentImages)
 
 
@@ -133,7 +138,7 @@ function Home() {
 
   const getWtrIcon = (wtrState) => {
     if (!wtrState) {
-      return cloud; 
+      return cloud;
     }
     const lState = wtrState.toLowerCase()
     const isMatch = (keywords) => keywords.some(word => lState.includes(word))
@@ -149,7 +154,7 @@ function Home() {
 
   return (
     <>
-      <div className={`main w-full h-screen bg-cover overflow-hidden select-none text-white `} style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
+      <div className={`main w-full h-screen bg-cover overflow-hidden select-none text-white `} style={{ backgroundImage: `url(${bgImage[imageLoc]?.url || background})` }}>
         <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/20 to-transparent pointer-events-none z-0"></div>
         <div className="timeAndDate flex justify-end m-3 relative z-10">
 
@@ -212,7 +217,7 @@ function Home() {
           {links?.map((valOfLink) => (
             <div key={valOfLink.name} className='cursor-pointer flex flex-col justify-center items-center  relative z-10' onClick={() => { window.location.href = valOfLink.url }} >
               <div className="logo" ><img src={valOfLink.imageText} alt="" className='w-10 h-10 rounded-lg ' /></div>
-              <div className="lname text-sm mt-1 capitalizey ">{valOfLink.name}</div>
+              <div className="lname text-sm mt-1 capitalize ">{valOfLink.name}</div>
             </div>
           ))}
         </div>
@@ -225,7 +230,28 @@ function Home() {
         </div>
 
 
-
+        {bgImage[imageLoc]?.photographer && (
+          <div className="absolute bottom-4 left-6 text-white/60 hover:text-white text-xs z-10 transition-colors font-sans">
+            Photo by{" "}
+            <a
+              href={`${bgImage[imageLoc].profileLink}?utm_source=Upwalls&utm_medium=referral`}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2 hover:text-violet-400"
+            >
+              {bgImage[imageLoc].photographer}
+            </a>
+            {" "}on{" "}
+            <a
+              href="https://unsplash.com/?utm_source=Upwalls&utm_medium=referral"
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2 hover:text-violet-400"
+            >
+              Unsplash
+            </a>
+          </div>
+        )}
       </div>
     </>
   )
