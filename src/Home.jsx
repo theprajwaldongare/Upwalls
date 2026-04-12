@@ -9,7 +9,7 @@ import './App.css'
 
 function Home() {
 
-  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt } = useContext(SettingsContext)
+  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt,isBgDark, setIsBgDark } = useContext(SettingsContext)
 
   const [now, setNow] = useState(new Date())
   const [searchData, setsearchData] = useState("")
@@ -84,10 +84,6 @@ function Home() {
     const oneHour = 60 * 60 * 1000;
     let currentImages = [...bgImage];
 
-    // if (now.getHours()-imgHourCnt>=1) {
-    //   setBgImage([]) // to add new 20 images when user click next image button
-
-    // }
     if (imgHourCnt > 0 && (currentTime - imgHourCnt >= oneHour)) {
       currentImages = []
       setImgHourCnt(currentTime)
@@ -104,6 +100,9 @@ function Home() {
         const dataImg = await response.json()
         const newImageUrl = dataImg.urls.regular
 
+        const domColor = dataImg.color
+        const isDark = checkIsDark(domColor)
+        setIsBgDark(isDark)
         currentImages.push(newImageUrl)
         setBgImage(currentImages)
 
@@ -127,50 +126,38 @@ function Home() {
         setImageLoc(imageLoc + 1)
       }
     }
-    // if (bgImage.length < 20) {
-    //   if (bgImage.length==0) {
-    //     setImgHourCnt(now.getHours())
-    //   }
-    //   try {
-    //     const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=wallpapers&client_id=${import.meta.env.VITE_UNSPLASH_KEY}`
-    //     const response = await fetch(url)
-    //     const dataImg = await response.json()
-    //     const newImageUrl = dataImg.urls.regular
-    //     setBgImage([...(bgImage || []),newImageUrl])
 
 
+  }
 
-    //     // localStorage.setItem("upwallBackground", newImageUrl)
-    //     localStorage.setItem("upwallBackground", bgImage)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
-    // else{
-    //   if (imageLoc>=20) {
-    //     setImageLoc(0)
-    //   }
-    //   setImageLoc(imageLoc+1)
-    // }
-
+  const checkIsDark = (hexVal) => {
+    if (!hexVal) {
+      return true
+    }
+    const hex = hexVal.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+    const luminance = (r * 0.299 + g * 0.587 + b * 0.114)
+    return luminance < 128
   }
 
 
   return (
     <>
-      <div className="main w-full h-screen bg-cover overflow-hidden select-none" style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
-        <div className="timeAndDate flex justify-center mt-4">
-          <div className="greet">
-            {getGreeting()}
-          </div>
-          <div className="time ml-4">
-            {timeOnly.slice(0, -3)}
-          </div>
-          <div className="ampm ml-2">
-            {amPm}
-          </div>
-          <div className="date ml-6">
-            {dateval}
+      <div className={`main w-full h-screen bg-cover overflow-hidden select-none ${isBgDark ? 'text-white' : 'text-black' }`} style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
+        <div className="timeAndDate flex justify-end m-3 ">
+
+          <div className="TandD flex ">
+            <div className="time ml-4">
+              {timeOnly.slice(0, -3)}
+            </div>
+            <div className="ampm ml-2">
+              {amPm}
+            </div>
+            <div className="date ml-6">
+              {dateval}
+            </div>
           </div>
         </div>
 
@@ -182,6 +169,10 @@ function Home() {
             </div>
           </div>
         }
+
+        <div className="greet flex w-full justify-center mt-8 text-3xl">
+          {getGreeting()}
+        </div>
 
         <div className="setting absolute bottom-6 right-6 flex justify-center mt-6">
           <Link to="/settings">

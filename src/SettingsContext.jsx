@@ -53,23 +53,21 @@ export const SettingsProvider = ({ children }) => {
     const [imgHourCnt, setImgHourCnt] = useState(0)
     const [bgImage, setBgImage] = useState(()=>{
         const savedBg = localStorage.getItem("upwallBackground")
-        // if (savedBg[0]) {
-        //     return savedBg[imageLoc]
-        // }
         if (savedBg) {
             return JSON.parse(savedBg)
         }
         return []
     })
+    const [isBgDark, setIsBgDark] = useState(()=>{
+        const savedData = localStorage.getItem("upwallSettings")
+        if (savedData) {
+            const parsedData = JSON.parse(savedData)
+            return parsedData.isBgDark
+        }
+        return false
+    })
 
 
-    // const [bgImage, setBgImage] = useState(()=>{
-    //     const savedBg = localStorage.getItem("upwallBackground")
-    //     if (savedBg) {
-    //         return savedBg
-    //     }
-    //     return null
-    // })
 
 
     useEffect(() => {
@@ -84,15 +82,16 @@ export const SettingsProvider = ({ children }) => {
             "city":cityInp,
             "links":links,
             "imageLoc":imageLoc,
-            "imgHourCnt":imgHourCnt
+            "imgHourCnt":imgHourCnt,
+            "isBgDark":isBgDark
         }
         localStorage.setItem("upwallSettings", JSON.stringify(dataToLocal))
         console.log(links)
-    }, [isSearchEnabled,isWeatherEnabled,cityInp,links,imageLoc])
+    }, [isSearchEnabled,isWeatherEnabled,cityInp,links,imageLoc,isBgDark])
 
     return (
 
-        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks,bgImage,setBgImage,imageLoc, setImageLoc,imgHourCnt, setImgHourCnt }}>
+        <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled,isWeatherEnabled,setIsWeatherEnabled,cityInp,setCityInp,links, setLinks,bgImage,setBgImage,imageLoc, setImageLoc,imgHourCnt, setImgHourCnt,isBgDark, setIsBgDark }}>
             {children}
         </SettingsContext.Provider>
     );
