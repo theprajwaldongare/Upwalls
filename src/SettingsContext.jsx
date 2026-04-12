@@ -1,81 +1,54 @@
 import { createContext, useState, useEffect } from 'react';
+import { saveToStorage, loadFromStorage } from './storage';
 
 export const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
-    const [isSearchEnabled, setIsSearchEnabled] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            // setIsSearchEnabled(parsedData.search)
-            return parsedData.search
-        }
-        // setIsSearchEnabled(true)
-        return true
-    });
-
-    const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            return parsedData.weather
-        }
-        return false
-    });
-
-    const [cityInp, setCityInp] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            return parsedData.city
-        }
-        return ""
-    })
-
-    const [links, setLinks] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            return parsedData.links || []
-        }
-        return []
-    })
-
-    const [imageLoc, setImageLoc] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            if (parsedData.imageLoc !== undefined) {
-                return parsedData.imageLoc
-            }
-        }
-        return 0
-    })
-    const [imgHourCnt, setImgHourCnt] = useState(() => {
-        const savedData = localStorage.getItem("upwallSettings")
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            if (parsedData.imgHourCnt !== undefined) {
-                return parsedData.imgHourCnt
-            }
-        }
-        return 0;
-    });
-    const [bgImage, setBgImage] = useState(() => {
-        const savedBg = localStorage.getItem("upwallBackground")
-        if (savedBg) {
-            return JSON.parse(savedBg)
-        }
-        return []
-    })
-
+    
+    const [isSearchEnabled, setIsSearchEnabled] = useState(true);
+    const [isWeatherEnabled, setIsWeatherEnabled] = useState(false);
+    const [cityInp, setCityInp] = useState("");
+    const [links, setLinks] = useState([]);
+    const [imageLoc, setImageLoc] = useState(0);
+    const [imgHourCnt, setImgHourCnt] = useState(0);
+    const [bgImage, setBgImage] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
 
 
     useEffect(() => {
-        console.log("The val of searchED", isSearchEnabled, isWeatherEnabled, cityInp)
-        if (imageLoc == 20) {
-            setImageLoc(0)
+        const fetchInitialData = async () => {
+  
+            const savedSettings = await loadFromStorage("upwallSettings");
+            if (savedSettings) {
+
+                if (savedSettings.search !== undefined) setIsSearchEnabled(savedSettings.search);
+                if (savedSettings.weather !== undefined) setIsWeatherEnabled(savedSettings.weather);
+                if (savedSettings.city !== undefined) setCityInp(savedSettings.city);
+                if (savedSettings.links !== undefined) setLinks(savedSettings.links);
+                if (savedSettings.imageLoc !== undefined) setImageLoc(savedSettings.imageLoc);
+                if (savedSettings.imgHourCnt !== undefined) setImgHourCnt(savedSettings.imgHourCnt);
+            }
+
+
+            const savedBg = await loadFromStorage("upwallBackground");
+            if (savedBg) {
+                setBgImage(savedBg);
+            }
+            setIsLoaded(true)
+        };
+
+        fetchInitialData();
+    }, []); 
+
+
+
+    useEffect(() => {
+        if (!isLoaded) return;
+        if (links === undefined) return; 
+
+        if (imageLoc === 20) {
+            setImageLoc(0);
         }
 
         const dataToLocal = {
@@ -85,15 +58,16 @@ export const SettingsProvider = ({ children }) => {
             "links": links,
             "imageLoc": imageLoc,
             "imgHourCnt": imgHourCnt,
-        }
-        localStorage.setItem("upwallSettings", JSON.stringify(dataToLocal))
-        console.log(links)
-    }, [isSearchEnabled, isWeatherEnabled, cityInp, links, imageLoc])
+        };
+        
+        saveToStorage("upwallSettings", dataToLocal);
+        
+    }, [isSearchEnabled, isWeatherEnabled, cityInp, links, imageLoc, imgHourCnt,isLoaded]);
 
     return (
-
         <SettingsContext.Provider value={{ isSearchEnabled, setIsSearchEnabled, isWeatherEnabled, setIsWeatherEnabled, cityInp, setCityInp, links, setLinks, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt }}>
             {children}
         </SettingsContext.Provider>
     );
 };
+

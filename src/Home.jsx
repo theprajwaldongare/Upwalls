@@ -3,6 +3,7 @@ import { MdSearch, MdChangeCircle } from "react-icons/md";
 import { HiCog } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
+import { saveToStorage } from './storage';
 import background from './assets/background.jpg'
 import cloud from './assets/cloud.png';
 import sun from './assets/sun.png';
@@ -10,7 +11,6 @@ import rain from './assets/rain.png';
 import fog from './assets/fog.png';
 import snow from './assets/snow.png';
 import './App.css'
-
 function Home() {
 
   const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt } = useContext(SettingsContext)
@@ -110,7 +110,8 @@ function Home() {
 
 
 
-        localStorage.setItem("upwallBackground", JSON.stringify(currentImages))
+        // localStorage.setItem("upwallBackground", JSON.stringify(currentImages))
+        saveToStorage("upwallBackground", currentImages)
         setImageLoc(currentImages.length - 1)
       } catch (error) {
         console.log(error)
