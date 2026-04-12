@@ -3,13 +3,17 @@ import { MdSearch, MdChangeCircle } from "react-icons/md";
 import { HiCog } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
-import googleLogo from './assets/googleLogo.png'
 import background from './assets/background.jpg'
+import cloud from './assets/cloud.png';
+import sun from './assets/sun.png';
+import rain from './assets/rain.png';
+import fog from './assets/fog.png';
+import snow from './assets/snow.png';
 import './App.css'
 
 function Home() {
 
-  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt,isBgDark, setIsBgDark } = useContext(SettingsContext)
+  const { isSearchEnabled, isWeatherEnabled, cityInp, links, bgImage, setBgImage, imageLoc, setImageLoc, imgHourCnt, setImgHourCnt } = useContext(SettingsContext)
 
   const [now, setNow] = useState(new Date())
   const [searchData, setsearchData] = useState("")
@@ -100,9 +104,6 @@ function Home() {
         const dataImg = await response.json()
         const newImageUrl = dataImg.urls.regular
 
-        const domColor = dataImg.color
-        const isDark = checkIsDark(domColor)
-        setIsBgDark(isDark)
         currentImages.push(newImageUrl)
         setBgImage(currentImages)
 
@@ -130,23 +131,27 @@ function Home() {
 
   }
 
-  const checkIsDark = (hexVal) => {
-    if (!hexVal) {
-      return true
+  const getWtrIcon = (wtrState) => {
+    if (!wtrState) {
+      return cloud; 
     }
-    const hex = hexVal.replace('#', '')
-    const r = parseInt(hex.substring(0, 2), 16)
-    const g = parseInt(hex.substring(2, 4), 16)
-    const b = parseInt(hex.substring(4, 6), 16)
-    const luminance = (r * 0.299 + g * 0.587 + b * 0.114)
-    return luminance < 128
+    const lState = wtrState.toLowerCase()
+    const isMatch = (keywords) => keywords.some(word => lState.includes(word))
+    if (isMatch(["sunny", "clear", "fair"])) return sun
+    if (isMatch(["rain", "drizzle", "shower", "storm", "thunder"])) return rain
+    if (isMatch(["fog", "haze", "mist", "smog", "dust", "smoke"])) return fog
+    if (isMatch(["snow", "sleet", "blizzard", "hail"])) return snow
+
+    return cloud
   }
+
 
 
   return (
     <>
-      <div className={`main w-full h-screen bg-cover overflow-hidden select-none ${isBgDark ? 'text-white' : 'text-black' }`} style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
-        <div className="timeAndDate flex justify-end m-3 ">
+      <div className={`main w-full h-screen bg-cover overflow-hidden select-none text-white `} style={{ backgroundImage: `url(${bgImage[imageLoc] || background})` }}>
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/20 to-transparent pointer-events-none z-0"></div>
+        <div className="timeAndDate flex justify-end m-3 relative z-10">
 
           <div className="TandD flex ">
             <div className="time ml-4">
@@ -170,11 +175,11 @@ function Home() {
           </div>
         }
 
-        <div className="greet flex w-full justify-center mt-8 text-3xl">
+        <div className="greet flex w-full justify-center mt-8 text-3xl relative z-10">
           {getGreeting()}
         </div>
 
-        <div className="setting absolute bottom-6 right-6 flex justify-center mt-6">
+        <div className="setting absolute bottom-6 right-6 flex justify-center mt-6 z-10">
           <Link to="/settings">
             {/* <div className="set bg-pink-900 h-6 w-6 rounded-full cursor-pointer">
           </div> */}
@@ -182,27 +187,32 @@ function Home() {
           </Link>
         </div>
 
-        {isWeatherEnabled && <div className="weather flex flex-col items-center justify-center">
-          <div className="weatherIcon">
-            <img src={temp.split(",")[2]} className='w-16 h-16 rounded-full' />
-          </div>
-          <div className="tempc mt-6 text-2xl">
-            {temp.split(",")[0]} ℃
-          </div>
-          <div className="tempCondition mt-2 text-2xl">
-            {temp.split(",")[1]}
-          </div>
-          <div className="cityname mt-2 text-2xl">
+        {isWeatherEnabled && <div className="weather flex flex-col items-center justify-center relative z-10 rounded-3xl mt-3 ">
+          <div className="wthr w-29 flex flex-col justify-center items-center  p-4  ">
+            <div className="weatherIcon">
+              {/* <img src={temp.split(",")[2]} className='w-16 h-16 rounded-full' /> */}
+              <img src={getWtrIcon(temp.split(",")[1])} className='w-14 h-14 rounded-full' alt="" />
+            </div>
+            <div className="wtr">
+              <div className="tempc mt-3 text-2xl">
+                {temp.split(",")[0]} ℃
+              </div>
+              <div className="tempCondition mt-2 text-2xl">
+                {temp.split(",")[1]}
+              </div>
+            </div>
+            {/* <div className="cityname mt-2 text-2xl">
             {cityInp}
+          </div> */}
           </div>
         </div>}
 
         <div className="linkRender flex gap-4 mt-8 justify-center flex-wrap max-w-4xl mx-auto">
           {/* <div className="linkRender grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 mt-8 justify-items-center"> */}
           {links?.map((valOfLink) => (
-            <div key={valOfLink.name} className='cursor-pointer flex flex-col justify-center items-center ' onClick={() => { window.location.href = valOfLink.url }} >
+            <div key={valOfLink.name} className='cursor-pointer flex flex-col justify-center items-center  relative z-10' onClick={() => { window.location.href = valOfLink.url }} >
               <div className="logo" ><img src={valOfLink.imageText} alt="" className='w-10 h-10 rounded-lg ' /></div>
-              <div className="lname text-sm mt-1 capitalize">{valOfLink.name}</div>
+              <div className="lname text-sm mt-1 capitalizey ">{valOfLink.name}</div>
             </div>
           ))}
         </div>

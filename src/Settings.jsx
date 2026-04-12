@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { SettingsContext } from './SettingsContext'
 import { IoCaretBackCircle} from 'react-icons/io5'
 import { HiOutlineTrash, HiCheckCircle } from 'react-icons/hi'
-import { Links } from 'react-router-dom'
+
 const Settings = () => {
   const { isSearchEnabled, setIsSearchEnabled, isWeatherEnabled, setIsWeatherEnabled, cityInp, setCityInp, links, setLinks } = useContext(SettingsContext)
 

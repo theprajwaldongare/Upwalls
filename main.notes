@@ -1,5 +1,5 @@
 {
-  "time": 1775975792015,
+  "time": 1776008246252,
   "blocks": [
     {
       "id": "3OilOXWGd8",
@@ -61,14 +61,14 @@
           {
             "content": "Save settings in local storage &amp; Extension storage ",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
           {
             "content": "Make home page UI good ",
             "meta": {
-              "checked": false
+              "checked": true
             },
             "items": []
           },
@@ -95,6 +95,13 @@
           },
           {
             "content": "Save 20 images in local storage",
+            "meta": {
+              "checked": true
+            },
+            "items": []
+          },
+          {
+            "content": "Add different weather icons and use them depending on the values of weather ",
             "meta": {
               "checked": true
             },
